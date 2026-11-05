@@ -1,0 +1,5 @@
+{% set route = app.current_route %}
+<nav>
+    <a href="{{ path('app_home') }}"{% if route == 'app_home' %} aria-current="page"{% endif %}>Accueil</a>
+    <a href="{{ path('app_project_index') }}"{% if route == 'app_project_index' %} aria-current="page"{% endif %}>Projets</a>
+</nav>

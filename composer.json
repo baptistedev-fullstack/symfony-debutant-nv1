@@ -1,10 +1,12 @@
 {
+    "name": "baptistedev-fullstack/symfony-debutant-nv1",
+    "description": "Formation Symfony 8.1, Debutant Nv1 : routes, contrôleurs et Twig",
     "type": "project",
-    "license": "proprietary",
+    "license": "MIT",
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.4",
+        "php": ">=8.5.12",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "symfony/asset": "8.1.*",
