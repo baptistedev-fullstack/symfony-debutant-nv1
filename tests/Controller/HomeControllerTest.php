@@ -14,4 +14,12 @@ class HomeControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('h1', 'Portfolio');
     }
+
+    public function testHomePageLinksToProjects(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/');
+
+        self::assertSelectorExists('a[href="/projets"]');
+    }
 }

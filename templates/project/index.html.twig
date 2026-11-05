@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Projets{% endblock %}
+
+{% block body %}
+    <h1>Projets</h1>
+
+    <ul class="projects">
+        {% for slug, project in projects %}
+            <li><a href="{{ path('app_project_show', {slug: slug}) }}">{{ project.title }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <p><a href="{{ path('app_home') }}">Retour à l'accueil</a></p>
+{% endblock %}
