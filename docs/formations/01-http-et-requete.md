@@ -83,7 +83,7 @@ Navigateur
 Lisez [public/index.php](../../public/index.php). Il ne fait que deux choses :
 
 1. Il charge `vendor/autoload_runtime.php`. Ce fichier active le composant Runtime de Symfony et l'autoload de Composer.
-2. Il renvoie une fonction qui crée le `Kernel`. Le Runtime appelle cette fonction, envoie la requête au Kernel et transmet la réponse au client.
+2. Il renvoie une fonction anonyme (une *closure*) qui crée le `Kernel`. `static function` signifie que cette fonction n'a pas accès à `$this` : elle ne dépend d'aucun objet. Le Runtime appelle cette fonction, envoie la requête au Kernel et transmet la réponse au client.
 
 La fonction reçoit `$context`, un tableau qui contient les variables d'environnement. C'est de là que viennent `APP_ENV` et `APP_DEBUG`, expliqués dans la [fiche 6](06-configuration-et-environnements.md).
 

@@ -9,7 +9,7 @@ Ce dépôt se lit : le code d'un côté, la documentation de l'autre. Commencez 
 ## Prérequis
 
 - Docker avec Docker Compose : c'est tout ce qu'il faut pour lancer le site.
-- Pour travailler hors de Docker : PHP 8.5.12 ou plus, Composer, et si possible le [Symfony CLI](https://symfony.com/download).
+- Pour travailler hors de Docker : PHP 8.5.12 ou plus, Composer, et si possible le [Symfony CLI](https://symfony.com/download). Installez ensuite les dépendances avec `composer install`, puis lancez le serveur avec `symfony serve`.
 
 ## Démarrage
 

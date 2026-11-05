@@ -123,7 +123,7 @@ Ici, les données sont écrites en dur et ne présentent aucun risque, mais cett
 [config/packages/twig.yaml](../../config/packages/twig.yaml) contient deux réglages :
 
 - `file_name_pattern: '*.twig'` indique quels fichiers Twig doit préparer dans le cache et vérifier avec `lint:twig` ;
-- `strict_variables: true`, en environnement `test` seulement, fait échouer le rendu si une variable n'existe pas. Une faute de frappe dans un template casse alors les tests.
+- `strict_variables: true` fait échouer le rendu si une variable n'existe pas. Par défaut, ce réglage suit `%kernel.debug%` : il est donc déjà actif partout où le mode debug l'est, c'est-à-dire en `dev` et en `test`, et désactivé en `prod`. Le bloc `when@test` le garde actif en `test` même si le debug est coupé, par exemple avec `debug => false`. Une faute de frappe dans un template casse alors les tests.
 
 ## Commandes officielles utilisées
 

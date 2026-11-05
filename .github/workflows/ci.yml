@@ -11,6 +11,7 @@ permissions:
 jobs:
   quality:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -20,6 +21,7 @@ jobs:
           php-version: '8.5'
           extensions: intl
           tools: composer
+          coverage: none
 
       - name: Repérer le cache Composer
         id: composer-cache
@@ -55,6 +57,7 @@ jobs:
 
   docker:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -63,7 +66,7 @@ jobs:
 
       - name: Vérifier que /projets répond
         run: |
-          body=$(curl --retry 10 --retry-delay 2 --retry-all-errors -fsS http://localhost:8080/projets)
+          body=$(curl --retry 10 --retry-delay 2 --retry-all-errors --max-time 10 -fsS http://localhost:8080/projets)
           grep -q 'Mini-blog' <<<"$body"
 
       - name: Lancer les tests dans le conteneur

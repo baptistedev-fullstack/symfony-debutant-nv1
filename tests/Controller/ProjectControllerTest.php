@@ -23,6 +23,7 @@ class ProjectControllerTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('h1', 'Mini-blog');
+        self::assertSelectorTextContains('p', 'Un petit blog pour publier des articles courts');
     }
 
     public function testUnknownSlugReturns404(): void

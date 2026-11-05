@@ -36,7 +36,7 @@ Debutant-Nv1/
 | [.editorconfig](../.editorconfig) | Le format des fichiers pour les éditeurs | Recette |
 | [phpunit.dist.xml](../phpunit.dist.xml) | La configuration de PHPUnit | Recette |
 
-Les fichiers `.env.local`, `.env.local.php` et `.env.*.local` sont personnels : ils sont ignorés par Git et par Docker, et ne sont pas nécessaires à ce projet. `.DS_Store` est un fichier technique de macOS, lui aussi ignoré.
+Les fichiers `.env.local`, `.env.local.php` et `.env.*.local` sont personnels : ils sont ignorés par Git et absents de l'image, mais visibles du conteneur lancé (voir [docker.md](docker.md)), et ne sont pas nécessaires à ce projet. `.DS_Store` est un fichier technique de macOS, lui aussi ignoré.
 
 ## `.github/workflows/`
 

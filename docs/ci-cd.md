@@ -61,7 +61,10 @@ Il vérifie le code directement sur un runner Ubuntu, sans Docker.
 ```yaml
 quality:
   runs-on: ubuntu-latest
+  timeout-minutes: 10
 ```
+
+`timeout-minutes: 10` arrête le job au bout de 10 minutes. Sans cette ligne, GitHub attend jusqu'à 6 heures : une étape bloquée consommerait du temps de calcul pour rien. Les deux jobs ont cette limite.
 
 | Étape | Ce qu'elle fait | Si elle échoue |
 |---|---|---|
@@ -100,7 +103,7 @@ La **clé** contient une empreinte de `composer.lock` : quand les dépendances c
 
 ### L'installation de PHP
 
-`php-version: '8.5'` prend la dernière version disponible de cette branche. `extensions: intl` et `tools: composer` ajoutent ce qui manque au runner. `composer install` échouerait avec une version de PHP inférieure à 8.5.12, le minimum fixé par [composer.json](../composer.json).
+`php-version: '8.5'` prend la dernière version disponible de cette branche. `extensions: intl` et `tools: composer` ajoutent ce qui manque au runner. `coverage: none` désactive l'outil de couverture de code (Xdebug ou PCOV), dont ce niveau n'a pas besoin : PHP démarre plus vite et les tests tournent sans surcoût. `composer install` échouerait avec une version de PHP inférieure à 8.5.12, le minimum fixé par [composer.json](../composer.json).
 
 ## Le job `docker`
 
@@ -119,7 +122,7 @@ Les explications de Docker se trouvent dans [docker.md](docker.md).
 ### La vérification de `/projets`
 
 ```bash
-body=$(curl --retry 10 --retry-delay 2 --retry-all-errors -fsS http://localhost:8080/projets)
+body=$(curl --retry 10 --retry-delay 2 --retry-all-errors --max-time 10 -fsS http://localhost:8080/projets)
 grep -q 'Mini-blog' <<<"$body"
 ```
 
@@ -130,9 +133,12 @@ Les options de `curl` :
 | `--retry 10` | Réessayer jusqu'à 10 fois |
 | `--retry-delay 2` | Attendre 2 secondes entre deux essais |
 | `--retry-all-errors` | Réessayer quelle que soit l'erreur |
+| `--max-time 10` | Abandonner un essai qui dure plus de 10 secondes |
 | `-f` | Échouer si le code HTTP indique une erreur |
 | `-s` | Masquer la barre de progression |
 | `-S` | Garder quand même les messages d'erreur |
+
+`--max-time 10` limite chaque essai : sans lui, un serveur qui accepte la connexion sans répondre ferait attendre `curl` indéfiniment. Un essai trop long est alors abandonné, puis réessayé.
 
 `--retry-all-errors` est nécessaire parce que le serveur peut renvoyer une réponse vide au démarrage. [docker.md](docker.md#pourquoi-projets-peut-répondre-vide-au-démarrage) explique pourquoi.
 

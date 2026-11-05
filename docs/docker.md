@@ -58,15 +58,16 @@ FROM dunglas/frankenphp:1.13.5-php8.5.12-trixie
 L'image de départ. Le tag précise FrankenPHP 1.13.5, PHP 8.5.12 et Debian 13 `trixie`. Une version exacte évite qu'une reconstruction change PHP sans prévenir. Elle garantit aussi le minimum de 8.5.12, voir [versions.md](versions.md).
 
 ```dockerfile
-RUN install-php-extensions @composer intl opcache zip
+RUN install-php-extensions @composer intl zip
 ```
 
 `install-php-extensions` est un outil fourni par l'image.
 
 - `@composer` installe Composer.
 - `intl` apporte les fonctions d'internationalisation.
-- `opcache` garde le code PHP compilé en mémoire.
 - `zip` permet à Composer de décompresser les paquets.
+
+OPcache, qui garde le code PHP compilé en mémoire, est déjà intégré à l'image : le demander à `install-php-extensions` afficherait `Module already installed`.
 
 ```dockerfile
 ENV SERVER_NAME=:80
@@ -134,6 +135,8 @@ Le **bind mount** : le dossier du projet apparaît dans le conteneur à la place
 
 Attention à une conséquence : **ce montage rend visible tout le dossier, y compris ce que `.dockerignore` exclut**. Un fichier `.env.local` sur votre machine n'est pas dans l'image, mais il est lu par le conteneur en cours d'exécution. De même, `docs/` et `var/` y sont visibles. `.dockerignore` protège l'image, pas le conteneur lancé avec ce montage.
 
+Autre risque connu de ce montage : sur un hôte Linux, le conteneur s'exécute en `root`, donc `var/`, `vendor/` et `.phpunit.cache` peuvent appartenir à `root` sur votre machine et demander un `sudo chown` pour être supprimés.
+
 ```yaml
       - /app/vendor
 ```
@@ -190,7 +193,7 @@ Ce projet utilise le mode classique : dans le Caddyfile de l'image, la ligne `wo
 
 La raison principale est l'**état partagé**. En mode worker, les objets et les variables statiques restent en mémoire entre deux requêtes. Un service qui garde une valeur dans une propriété pourrait servir à un visiteur les données du visiteur précédent. Il faut donc écrire son code en sachant qu'il survit à la requête, et apprendre à repérer ces fuites : c'est trop tôt à ce niveau, où l'on découvre tout juste le cycle requête et réponse.
 
-Il y a une seconde raison : un code qui reste en mémoire doit être relu pour qu'un changement soit pris en compte, alors qu'en mode classique, il suffit de recharger la page.
+Il y a une seconde raison : un code qui reste en mémoire doit être rechargé ou redémarré pour qu'un changement soit pris en compte, alors qu'en mode classique, il suffit de recharger la page.
 
 Un site de trois pages n'a de toute façon pas besoin de ce gain de vitesse.
 
