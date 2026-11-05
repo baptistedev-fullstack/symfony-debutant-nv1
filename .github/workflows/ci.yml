@@ -12,10 +12,10 @@ jobs:
   quality:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Installer PHP
-        uses: shivammathur/setup-php@2.40.0
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         with:
           php-version: '8.5'
           extensions: intl
@@ -26,7 +26,7 @@ jobs:
         run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
 
       - name: Restaurer le cache Composer
-        uses: actions/cache@v6.1.0
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: composer-${{ runner.os }}-${{ hashFiles('composer.lock') }}
@@ -56,13 +56,15 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Démarrer les conteneurs
         run: docker compose up -d --build
 
       - name: Vérifier que /projets répond
-        run: curl --retry 10 --retry-delay 2 --retry-all-errors -fsS http://localhost:8080/projets | grep -q 'Mini-blog'
+        run: |
+          body=$(curl --retry 10 --retry-delay 2 --retry-all-errors -fsS http://localhost:8080/projets)
+          grep -q 'Mini-blog' <<<"$body"
 
       - name: Lancer les tests dans le conteneur
         run: docker compose exec -T app php bin/phpunit
