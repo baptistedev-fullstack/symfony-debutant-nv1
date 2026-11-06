@@ -38,10 +38,51 @@ fichiers modifiés ──git add──> index ──git commit──> historique
 
 Le parcours de travail de ce projet :
 
-1. Créer une branche pour le travail, ici `feat/portfolio`.
+1. Créer une branche pour le travail depuis un `main` à jour, ici `feat/portfolio`.
 2. Faire de petits commits, chacun avec les tests qui le prouvent.
 3. Pousser la branche et ouvrir une pull request.
 4. Fusionner dans `main` quand la [CI](../ci-cd.md) est verte.
+5. Supprimer la branche, dont le travail est maintenant dans `main`.
+
+### Créer une branche
+
+Une branche est une simple étiquette posée sur un commit, qui avance à chaque nouveau commit. La créer ne copie aucun fichier : c'est instantané et sans risque.
+
+On part toujours d'un `main` à jour. Sinon, la branche démarre d'un ancien état et le risque de conflit à la fusion augmente :
+
+```bash
+git switch main
+git pull
+git switch -c feat/portfolio
+```
+
+`git switch -c` crée la branche et s'y place. Une branche sert à un seul sujet, et vit le temps de ce sujet : quelques heures ou quelques jours, pas plusieurs mois. Plus elle dure, plus elle s'éloigne de `main`, et plus la fusion devient difficile.
+
+### Nommer une branche
+
+Le nom suit la forme `type/sujet` :
+
+```text
+feat/portfolio
+│    └── le sujet, court, en minuscules, mots séparés par des tirets
+└── le type, le même que dans les commits
+```
+
+Les **types** sont ceux des commits, seule la forme change :
+
+| Type | À utiliser pour | Nom de branche | Message de commit |
+|---|---|---|---|
+| `feat` | Une fonctionnalité | `feat/portfolio` | `feat: ajoute la page d'accueil du portfolio` |
+| `fix` | Une correction | `fix/lien-casse-accueil` | `fix: corrige le lien de la page d'accueil` |
+| `docs` | La documentation | `docs/conventions-branches` | `docs: explique la création et le nommage des branches` |
+| `ci` | L'intégration continue | `ci/cache-composer` | `ci: met en cache les dépendances Composer` |
+| `chore` | De la maintenance | `chore/maj-symfony` | `chore: met à jour Symfony` |
+
+`feat/portfolio` et `docs/conventions-branches` existent dans ce dépôt, les autres noms de branche sont des exemples. Le nom dit **sur quoi** on travaille, et le commit dit **ce qui change** : une branche contient souvent plusieurs commits.
+
+Contrairement à Conventional Commits, cette forme n'est pas une norme officielle : c'est une convention répandue, que chaque équipe fixe à sa façon. En entreprise, le nom porte souvent aussi le numéro du ticket.
+
+Git, lui, impose quelques règles : pas d'espace, ni de `~`, `^`, `:` ou `..` dans un nom. Le `/` est permis, mais il range les noms comme des dossiers : une branche `feat` empêche donc de créer `feat/portfolio`. Les accents passent, mais on les évite parce qu'ils sont moins pratiques à taper dans un terminal.
 
 ### Lire `.gitignore`
 
@@ -112,9 +153,20 @@ git push -u origin feat/portfolio
 
 Envoie la branche vers le dépôt distant `origin`. `-u` retient ce lien pour les prochains `git push`.
 
+```bash
+git switch main
+git pull
+git branch -d docs/conventions-branches
+git push origin --delete docs/conventions-branches
+```
+
+Après la fusion : revenir sur `main`, récupérer la fusion, puis supprimer la branche en local et sur GitHub. `git branch -d` refuse de supprimer une branche qui n'est pas fusionnée, ce qui évite de perdre du travail. Si la pull request a déjà supprimé la branche sur GitHub, la dernière commande est inutile.
+
 ## À retenir
 
 - Un commit par idée, avec un message clair.
+- Une branche par sujet, créée depuis un `main` à jour et nommée `type/sujet`.
+- Les branches et les commits partagent les mêmes types, mais pas la même forme.
 - On travaille sur une branche et on fusionne quand la CI est verte.
 - `.gitignore` empêche de suivre ce qui est généré ou privé.
 - Un secret commité reste dans l'historique : on vérifie avant de valider.
